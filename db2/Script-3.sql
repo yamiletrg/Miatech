@@ -1,0 +1,53 @@
+---- atpco vistas
+
+
+-------------------------------------------------------------------------------------
+-- FARE CLASS
+SELECT * FROM PXFARES.A2390
+
+SELECT * FROM PXFARES.A2390 WHERE A2390DDISC <> '0999999'
+-- A2390DEFEC|A2390DDISC
+-- 0140220   |0140701
+
+
+-------------------------------------------------------------------------------------
+-- FARE 
+SELECT * FROM PXFARES.A2419
+SELECT * FROM PXFARES.A2419 WHERE A2419DISC <> '000000'
+SELECT A2419EFFE,A2419DISC,A2419TARDT  FROM PXFARES.A2419
+SELECT A2419EFFE,A2419DISC,A2419TARDT FROM PXFARES.A2419 WHERE A2419EFFE <> '000000'
+
+SELECT *
+FROM PXFARES.A2419 A
+WHERE 
+	A2419CXRCD ='AM'
+	AND A2419OCITY='ATL'
+	AND A2419DCITY ='SHA'
+	AND A2419FCLAS='AOPM'
+  	AND A2419DISC = '131012'
+	AND A2419TARDT = '130215'
+FETCH FIRST 10 ROWS ONLY;
+
+--- 
+--- A2419TARDT = efectividad, 
+--- A2419GDATE = creacion 
+-- A2419EFFE|A2419DISC
+-- 000000   |131012   
+
+/*
+A2419CXRCD  -> carrier
+A2419OCITY -> origen
+A2419DCITY -> destino
+A2419FCLAS  -Z fare basis 
+A2419DISC  - > discontinuidad
+A2419TARDT  - > efectividad
+*/
+
+
+
+
+
+
+
+
+---

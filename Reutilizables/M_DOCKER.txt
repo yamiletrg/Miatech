@@ -1,0 +1,44 @@
+
+=========================================================
+                    DOCKER - GUÍA RÁPIDA
+=========================================================
+
+# CONTENEDORES
+---------------------------------------------------------
+docker ps                                -> Contenedores en ejecución
+docker ps -a                             -> Todos los contenedores
+
+docker start <container_name>            -> Iniciar contenedor
+docker stop <container_name>             -> Detener contenedor
+
+# LOGS
+---------------------------------------------------------
+docker logs <container_id>               -> Ver logs
+docker logs -f <container_id>            -> Ver logs en tiempo real
+
+Ejemplo:
+docker logs 8023cba29376
+
+Nota:
+- Error 404 -> Revisar configuración de Traefik.
+
+# INGRESAR AL CONTENEDOR
+---------------------------------------------------------
+docker exec -it <container_id> /bin/sh
+
+Ejemplo:
+docker exec -it aa8251824e25 /bin/sh
+
+# COMANDOS DENTRO DEL CONTENEDOR
+---------------------------------------------------------
+ls                                       -> Listar archivos
+cd logs                                  -> Ir a la carpeta logs
+cat 20260506.json                        -> Ver contenido del archivo
+
+# EJEMPLO COMPLETO
+---------------------------------------------------------
+docker exec -it aa8251824e25 /bin/sh
+ls
+cd logs
+ls
+cat 20260506.json

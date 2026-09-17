@@ -1,0 +1,83 @@
+====================================================
+GUÍA RÁPIDA - AS400
+====================================================
+
+CREACIÓN DE CORRELATIVOS (DEV)
+------------------------------
+EDTLIBL
+- Agregar librerías:
+  * PRAXIS
+  * LIBPRG
+- Salir: F3
+
+CALL PRO8700
+- Generar: S
+- Grabar: F8
+
+
+====================================================
+
+MANIPULAR TABLAS
+------------------------------
+
+WRKMBRPDM   (miembro o fuente)
+
+Tipos:
+PF  -> Physical File
+LF  -> Logical File
+CL  -> Programa CL
+CBL -> Programa COBOL
+
+Opciones:
+2  Editar
+3  Copiar fuente
+4  Eliminar
+5  Visualizar
+7  Cambiar nombre
+14 Compilar
+F4 Opciones de compilación
+
+
+====================================================
+
+OTROS
+------------------------------
+COMANDOS :
+WRKOBJ   - OBJETOS
+WRKMBRPDM - MIEMBRO O FUENTE   (SE DEBE COMPILAR PARA CONVERTIRSE EN OBJETO)  
+ -F4   SR /PRAXISJS
+ 
+ 
+ WRKMBRPDM -14(CREATE ARCHIVO FISICO) -F4(ENTER/ACEPTAR)-F10(EXPANDIR OPCIONES/PARAM. ADICIONALES)
+F11 - VER  LOS NOMBRES DE PARAMETROS
+
+
+.--CUANDO SE LAGEA
+SHIFT+ ESC + 2 = VUELVES A INICIO
+SHIFT + ESC +1 = INICIO
+----
+
+
+ --ADM TAREAS AS400
+WRKACTJOB 
+ 
+SHIF + F4 ORDENAR COLUMNA
+ 5 ---- ENTRAR A OPCIONES/LISTA GUIA DE OPCIONES  (SIEMPRE INGRESAR PRIMERO Y LUEGOSELCCIONAR  (10, 11, 41))
+ 
+ 10 -   --- PARA EL MSG(PARALIZADO EN BUCLE VER MSJ)
+ 11 -  -- DONDE SE QUEDO
+ 41 ----- MATAR PROCESO  (*IMMED)
+ 
+ 
+ 
+STRPDM
+3
+ENTER
+SP
+
+
+
+WRKOBJ , F4
+F9 TRAE LO ANTERIOR
+*ALL  
+

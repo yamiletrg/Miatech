@@ -1,0 +1,104 @@
+
+
+MIGRACION PRAXIS
+
+
+COMANDOS:
+
+- abrir docker
+-entrar a debian wsl : wsl -d Debian
+-abrir proyecto .code
+
+./vault-login.sh
+yadira
+n5n1FeNiOOmJ17ik
+./start-dev.sh
+.-----------------------------------------------------------------------------------------------
+				./vault-login.sh yadira --policy approle-mi-praxis-am-only
+				contraseña: n5n1FeNiOOmJ17ik
+				./start-dev.sh docker-compose.lr.yml
+-----------------------------------------------------------------------------------------------
+
+
+debe visualizarse al levantar 
+ LOG [Gateway] API available at: http://localhost:3700/api/v1
+
+-----------------------------------------------------------------------------------------------
+
+Levanta vista prueba: http://localhost:8081/
+Levanta graph : 
+
+wsl contraseña: Miatech2026
+
+-----------------------------------------------------------------------------------------------
+PRUEBA EN BRUNO:
+
+ http://localhost:3700/api/v1/sales/sales-masterdata/rates-of-exchange-sales/search
+ 
+ body:
+ {
+    "IN_TIPO_TABLA": "A018",
+    "IN_TIPO": "1",
+    "IN_CURR_FROM": "PEN",
+    "IN_DATE": "202401",
+    "IN_DATE_2": "202406",
+    "start": 0,
+    "limit": 20
+}}
+
+
+
+
+
+===================================================================================
+
+
+MODIFICADOS:
+
+
+/sales-masterdata/country-master-file-geography
+- search
+- descarga excel
+- edit
+
+
++search :PRAXIS.PX022S01PXA006
+
+SET V_VCSQL = 'SELECT COUNT(*) FROM PRAXIS.A006  
+
+SET V_VCSQL = 'SELECT ROW_NUMBER() OVER() AS RN,A006KEY,A006KEY1,A006MONEDA
+                   FROM PRAXIS.A006 
+				   
+				   
+PRAXIS: DEBE CAMBIARSE 'PRAXIS' POR LIBMIATEC
+
+
++ descarga excel : PENDIENTE
+
++ edit : PRAXIS.PX022S04PXA006
+
+
+------------------------------------------------------------------------------------
+
+/sales-masterdata/rates-of-exchange-sales   - GERSON
+
+------------------------------------------------------------------------------------
+--guia paginacion antigua
+/sales-masterdata/city-&-airports-master-file-geography
++search :PRAXIS.PX019S01A1007
+
+
+
+----------------------------------------------------------------------------------------
+
+/sales-masterdata/accounting-master-sales-accounting
++search: PRAXIS.SQP04480
+
+----------------------------------------------------------------------------------------
+
++ comentario : en testing existen mas campos A1741TIPO_00= Type
+/sales-masterdata/accounting-master-tax-accounting
++search: PRAXIS.SQP04484
++ filter country: PRAXIS.PX128S01A051
+
+----------------------------------------------------------------------------------------

@@ -1,0 +1,82 @@
+
+PASO 1
+
+ENVIAR MAIL A OPERACIONES
+
+Estimados buenas noches, favor de generar interpretación de farecalc de EXCH SKY de los días 20 al 28 de marzo del 2026.
+
+Cualquier duda me avisan.
+
+
+Saludos
+Pablo Pimentel
+
+
+
+PASO 2 - inserta data
+
+DENTRO DEL AS400
+
+CALL PXSAUDIT/LIBAUDIT
+
+EDITAR PROGRAMA PXSAUDIT/PRO10796CM
+
+EDITAR OPCION 2 -> ENTER
+
+AL ACABAR SE GRABA CON FILE (GUARDAR)
+
+Y COMPILAR (OPCION 14) -> ENTER
+
+OPCION REEMPLAZAR Y ENTER
+
+CALL PXSAUDIT/PRO10796CM
+
+CUANDO SE LIMPIE LA LINEA DE MANDATOS QUIERE DECIR QUE YA ACABO
+
+
+PASO 3
+
+ENVIAR MAIL A OPERACIONES
+
+Estimados buenas noches, favor de generar interpretación de farecalc de SALE AM de los días 20 al 28 de marzo del 2026.
+
+Cualquier duda me avisan.
+
+
+Saludos
+Pablo Pimentel
+
+
+PASO 4
+
+CALL PXSAUDIT.SQP02841('6052026031220260318ALL')
+
+SELECCIONAN LA LINEA Y EJECUTAR
+
+MONITOREAR EL LOG
+SELECT * FROM PXSAUDIT.X3056 -> CUANDO TE DIGA Fin Programa Proceso Auditoria H2... al -> ya acabo
+
+
+PASO 5
+
+RESPONDER A AILEEN QUE YA ACABO LA FECHA SOLICITADA
+
+
+**********************************************************************************************
+QUE PASA SIIIIIIII =0
+
+SELECT * FROM PXSAUDIT.A1672 WHERE A1672CCUST = '605' AND A1672FPROC BETWEEN '202603020' AND '202603030'
+
+A1672CIA A1672FORMA A1672SERIE *A1672SEQ* 1 Y 2
+
+EJECUTAR EL SP QUE ESTA EN PXSAUDIT/BORRA_AUDIT
+PRIMERO EXCH , RFND Y LUEGO SALE
+
+
+**************************
+
+AM
+
+
+CAN = CANALES ESPECIALES = ES TODAS LAS SEMANAS
+ALL = PROCESO NORMAL = ES TODO EL MES QUE ACABO CAN

@@ -1,0 +1,521 @@
+CREATE PROCEDURE PRAXIS.SQP05015 ( IN VP_CCUST CHAR(3),
+                                   IN VP_FPROC1 CHAR(8),
+                                   IN VP_FUEN VARCHAR(3),
+                                   IN VP_PAIS VARCHAR(2) )
+	RESULT SETS 1
+	LANGUAGE SQL
+	SPECIFIC PRAXIS.SQP05015
+
+BEGIN
+	/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
+    ++ HISTORIAL DE CAMBIOS
+    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    ++  DEV     CODE    DATE        DESCRIPCION                                        
+    ++  VHO     202300  14/07/2023  Creacion de SP
+	++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+	DECLARE VL_QRYSQL , VL_QRYSQL_1 VARCHAR ( 4000 ) ;
+	DECLARE VL_EOF , VL_EOF_1 , VL_NHOT , VL_DIADELASEMANA INTEGER DEFAULT 0 ;
+	DECLARE VL_A4469PDATE CHAR ( 8 ) ;
+	DECLARE VL_A4469PDATE_1 VARCHAR ( 15 ) ;
+	DECLARE VL_FOUND , VL_FLAG CHAR ( 1 ) ;
+	DECLARE VL_LABEL1 , VL_LABEL2 , VL_LABEL3 , VL_LABEL4 , VL_LABEL5 , VL_LABEL6 , VL_LABEL7 CHAR ( 1 ) ;
+	DECLARE VL_COUNTRY VARCHAR ( 40 ) ;
+	DECLARE VL_A4469STATU , VL_A4469IDATE VARCHAR ( 60 ) ;
+	DECLARE VL_A4469TSALE , VL_A4469TEXCH , VL_A4469TRFND , VL_A4469TMEMO , VL_A4469TVOID INT ;
+	DECLARE VL_PDATE VARCHAR ( 12 ) ;
+	DECLARE VL_COUNT INT ;
+	
+	DECLARE VL_SQLQRY VARCHAR ( 2000 ) DEFAULT '' ;	
+	DECLARE CURQRY CURSOR FOR STMTQRY ;
+	
+	-- SELECT * FROM SESSION.temp99 
+	DECLARE GLOBAL TEMPORARY TABLE SESSION . TEMP99 (
+		NHOT INT ,
+		COUNTRY VARCHAR ( 60 ) ,
+		COUNTRY_CODE VARCHAR ( 3 ) ,
+		CURR CHAR ( 3 ) ,		
+		--		
+		PRDA1 CHAR ( 8 ) , PRDA1_ VARCHAR ( 15 ) , STATUS1 VARCHAR ( 10 ) , ISSUDT1 VARCHAR ( 150 ) ,		
+		SALE1 INT , EXCH1 INT , RFND1 INT , MEMO1 INT , VOID1 INT , LABEL1 CHAR ( 1 ) , FLG1 CHAR ( 1 ) DEFAULT '' ,
+		--
+		PRDA2 CHAR ( 8 ) , PRDA2_ VARCHAR ( 15 ) , STATUS2 VARCHAR ( 10 ) , ISSUDT2 VARCHAR ( 150 ) ,
+		SALE2 INT , EXCH2 INT , RFND2 INT , MEMO2 INT , VOID2 INT , LABEL2 CHAR ( 1 ) , FLG2 CHAR ( 1 ) DEFAULT '' ,
+		--
+		PRDA3 CHAR ( 8 ) , PRDA3_ VARCHAR ( 15 ) , STATUS3 VARCHAR ( 10 ) , ISSUDT3 VARCHAR ( 150 ) ,		
+		SALE3 INT , EXCH3 INT , RFND3 INT , MEMO3 INT , VOID3 INT , LABEL3 CHAR ( 1 ) , FLG3 CHAR ( 1 ) DEFAULT '' ,
+		--
+		PRDA4 CHAR ( 8 ) , PRDA4_ VARCHAR ( 15 ) , STATUS4 VARCHAR ( 10 ) , ISSUDT4 VARCHAR ( 150 ) ,		
+		SALE4 INT , EXCH4 INT , RFND4 INT , MEMO4 INT , VOID4 INT , LABEL4 CHAR ( 1 ) , FLG4 CHAR ( 1 ) DEFAULT '' ,
+		--
+		PRDA5 CHAR ( 8 ) , PRDA5_ VARCHAR ( 15 ) , STATUS5 VARCHAR ( 10 ) , ISSUDT5 VARCHAR ( 150 ) ,		
+		SALE5 INT , EXCH5 INT , RFND5 INT , MEMO5 INT , VOID5 INT , LABEL5 CHAR ( 1 ) , FLG5 CHAR ( 1 ) DEFAULT '' ,
+		--
+		PRDA6 CHAR ( 8 ) , PRDA6_ VARCHAR ( 15 ) , STATUS6 VARCHAR ( 10 ) , ISSUDT6 VARCHAR ( 150 ) ,		
+		SALE6 INT , EXCH6 INT , RFND6 INT , MEMO6 INT , VOID6 INT , LABEL6 CHAR ( 1 ) , FLG6 CHAR ( 1 ) DEFAULT '' ,
+		--
+		PRDA7 CHAR ( 8 ) , PRDA7_ VARCHAR ( 15 ) , STATUS7 VARCHAR ( 10 ) , ISSUDT7 VARCHAR ( 150 ) ,	
+		SALE7 INT , EXCH7 INT , RFND7 INT , MEMO7 INT , VOID7 INT , LABEL7 CHAR ( 1 ) , FLG7 CHAR ( 1 ) DEFAULT ''
+	) WITH REPLACE ON COMMIT PRESERVE ROWS NOT LOGGED ;
+
+	-- Genera 7 dias desde una "Fecha inicial". 
+	SET VL_A4469PDATE = VP_FPROC1 ;
+	SET VL_EOF = 0 ;
+	SET VL_FOUND = 'N' ;
+		
+	
+	WHILE ( VL_EOF < 7 ) DO
+		SET VL_EOF = VL_EOF + 1 ;
+		
+		-- insert into praxis.qry_log1 values(VL_A4469PDATE);
+		
+		SET VL_EOF_1 = 0 ;
+		RW0 : FOR RW0_ AS RW0__ CURSOR FOR
+			SELECT * FROM PRAXIS . A4493
+			WHERE	A4493CCUST = VP_CCUST AND
+					A4493PRDA = VL_A4469PDATE AND
+					A4493FUENT = ( CASE WHEN VP_FUEN = '' THEN A4493FUENT ELSE VP_FUEN END ) AND
+					A4493PAIS = ( CASE WHEN VP_PAIS = '' THEN A4493PAIS ELSE VP_PAIS END )
+		DO		
+			
+			SET VL_EOF_1 = VL_EOF ;			
+			-- insert into praxis.qry_log1 values(VL_A4469PDATE);
+			-- insert into praxis.qry_log1 values(VL_EOF_1);
+			
+			SET VL_QRYSQL = 'INSERT INTO SESSION.TEMP99 ( NHOT, COUNTRY, COUNTRY_CODE, CURR, ' ;
+			SET VL_QRYSQL = VL_QRYSQL || 'PRDA' || VL_EOF || ',' ;
+			SET VL_QRYSQL = VL_QRYSQL || 'PRDA' || VL_EOF || '_,' ;
+			SET VL_QRYSQL = VL_QRYSQL || 'STATUS' || VL_EOF || ',' ;
+			SET VL_QRYSQL = VL_QRYSQL || 'ISSUDT' || VL_EOF || ',' ;			
+			SET VL_QRYSQL = VL_QRYSQL || 'SALE' || VL_EOF || ',' ;
+			SET VL_QRYSQL = VL_QRYSQL || 'EXCH' || VL_EOF || ',' ;
+			SET VL_QRYSQL = VL_QRYSQL || 'RFND' || VL_EOF || ',' ;
+			SET VL_QRYSQL = VL_QRYSQL || 'MEMO' || VL_EOF || ',' ;
+			SET VL_QRYSQL = VL_QRYSQL || 'VOID' || VL_EOF || ',' ;
+			SET VL_QRYSQL = VL_QRYSQL || 'FLG' || VL_EOF || ',' ; -- new				
+			SET VL_QRYSQL = VL_QRYSQL || 'LABEL' || VL_EOF ;		
+			SET VL_QRYSQL = VL_QRYSQL || ' )' ;
+			
+			SET VL_QRYSQL = VL_QRYSQL || ' VALUES (''' ;
+		SET VL_QRYSQL = VL_QRYSQL || A4493HOTN || ''',''' || TRIM ( A4493PAISD ) || ''',''' || A4493PAIS || ''',''' || A4493MDA || ''',''' ;
+			SET VL_QRYSQL = VL_QRYSQL || A4493PRDA || ''',''' || A4493PRDD || ''',''' || TRIM ( A4493STAT ) || ''',''' || TRIM ( A4493ISSUD ) || ''',''' ;
+			SET VL_QRYSQL = VL_QRYSQL || A4493SALE || ''',''' || A4493EXCH || ''',''' || A4493RFND || ''',''' || A4493MEMO || ''',''' || A4493VOID || ''',''' || A4493FLAG || ''',''' ;
+			SET VL_QRYSQL = VL_QRYSQL || A4493LABEL || ''')' ;
+									
+--			SET VL_QRYSQL = 
+--			CASE vl_DiaDeLaSemana 
+--				WHEN 1 THEN VL_QRYSQL || VL_LABEL1 ||''')'
+--				WHEN 2 THEN VL_QRYSQL || VL_LABEL2 ||''')'
+--				WHEN 3 THEN VL_QRYSQL || VL_LABEL3 ||''')'
+--				WHEN 4 THEN VL_QRYSQL || VL_LABEL4 ||''')'
+--				WHEN 5 THEN VL_QRYSQL || VL_LABEL5 ||''')'
+--				WHEN 6 THEN VL_QRYSQL || VL_LABEL6 ||''')'
+--				WHEN 7 THEN VL_QRYSQL || VL_LABEL7 ||''')'
+--			END;
+			
+			-- INSERT INTO PRAXIS.qry_log1 VALUES(VL_QRYSQL);
+			
+			SET VL_FLAG = 'N' ;
+			IF A4493FUENT = 'BSP' THEN		
+				SELECT 'S' INTO VL_FLAG FROM SESSION . TEMP99 WHERE COUNTRY_CODE = A4493PAIS AND CURR = A4493MDA ;
+			ELSE
+				SELECT 'S' INTO VL_FLAG FROM SESSION . TEMP99 WHERE COUNTRY = A4493FUENT ; -- ASR/ARC
+			END IF ;
+			
+			IF IFNULL ( VL_FLAG , 'N' ) = 'N' THEN				
+				EXECUTE IMMEDIATE VL_QRYSQL ; -- INSERT
+			ELSE
+				SET VL_QRYSQL_1 = 'UPDATE SESSION.temp99 SET ' ;	
+				SET VL_QRYSQL_1 = VL_QRYSQL_1 || ' NHOT=''' || A4493HOTN || ''',' ;		
+				SET VL_QRYSQL_1 = VL_QRYSQL_1 || ' PRDA' || VL_EOF || '=''' || A4493PRDA || ''', ' ;									
+				SET VL_QRYSQL_1 = VL_QRYSQL_1 || ' PRDA' || VL_EOF || '_ =''' || A4493PRDD || ''', ' ;	
+				SET VL_QRYSQL_1 = VL_QRYSQL_1 || ' STATUS' || VL_EOF || '=''' || TRIM ( A4493STAT ) || ''', ' ;
+				SET VL_QRYSQL_1 = VL_QRYSQL_1 || ' ISSUDT' || VL_EOF || '=''' || TRIM ( A4493ISSUD ) || ''', ' ;
+				SET VL_QRYSQL_1 = VL_QRYSQL_1 || ' SALE' || VL_EOF || '=''' || A4493SALE || ''', ' ;
+				SET VL_QRYSQL_1 = VL_QRYSQL_1 || ' EXCH' || VL_EOF || '=''' || A4493EXCH || ''', ' ;
+				SET VL_QRYSQL_1 = VL_QRYSQL_1 || ' RFND' || VL_EOF || '=''' || A4493RFND || ''', ' ;
+				SET VL_QRYSQL_1 = VL_QRYSQL_1 || ' MEMO' || VL_EOF || '=''' || A4493MEMO || ''', ' ;
+				SET VL_QRYSQL_1 = VL_QRYSQL_1 || ' VOID' || VL_EOF || '=''' || A4493VOID || ''', ' ;
+				SET VL_QRYSQL_1 = VL_QRYSQL_1 || ' LABEL' || VL_EOF || '=''' || A4493LABEL || ''', ' ;
+				SET VL_QRYSQL_1 = VL_QRYSQL_1 || ' FLG' || VL_EOF || '=''' || A4493FLAG || ''' ' ;
+--				SET VL_QRYSQL_1 = 
+--				CASE vl_DiaDeLaSemana 
+--					WHEN 1 THEN VL_QRYSQL_1 || ' LABEL'||VL_EOF||'=''' || VL_LABEL1 || ''' '
+--					WHEN 2 THEN VL_QRYSQL_1 || ' LABEL'||VL_EOF||'=''' || VL_LABEL2 || ''' ' 
+--					WHEN 3 THEN VL_QRYSQL_1 || ' LABEL'||VL_EOF||'=''' || VL_LABEL3 || ''' '
+--					WHEN 4 THEN VL_QRYSQL_1 || ' LABEL'||VL_EOF||'=''' || VL_LABEL4 || ''' '
+--					WHEN 5 THEN VL_QRYSQL_1 || ' LABEL'||VL_EOF||'=''' || VL_LABEL5 || ''' ' 
+--					WHEN 6 THEN VL_QRYSQL_1 || ' LABEL'||VL_EOF||'=''' || VL_LABEL6 || ''' '
+--					WHEN 7 THEN VL_QRYSQL_1 || ' LABEL'||VL_EOF||'=''' || VL_LABEL7 || ''' '
+--				END;
+				-- new
+--				SET VL_QRYSQL_1 = 
+--				CASE vl_DiaDeLaSemana 
+--					WHEN 1 THEN VL_QRYSQL_1 || ' ,FLG'||VL_EOF||'=''' || A4491FLG || ''' '
+--					WHEN 2 THEN VL_QRYSQL_1 || ' ,FLG'||VL_EOF||'=''' || A4491FLG || ''' ' 
+--					WHEN 3 THEN VL_QRYSQL_1 || ' ,FLG'||VL_EOF||'=''' || A4491FLG || ''' '
+--					WHEN 4 THEN VL_QRYSQL_1 || ' ,FLG'||VL_EOF||'=''' || A4491FLG || ''' '
+--					WHEN 5 THEN VL_QRYSQL_1 || ' ,FLG'||VL_EOF||'=''' || A4491FLG || ''' ' 
+--					WHEN 6 THEN VL_QRYSQL_1 || ' ,FLG'||VL_EOF||'=''' || A4491FLG || ''' '
+--					WHEN 7 THEN VL_QRYSQL_1 || ' ,FLG'||VL_EOF||'=''' || A4491FLG || ''' '
+--				END;
+												
+				SET VL_QRYSQL_1 = VL_QRYSQL_1 || ' WHERE COUNTRY_CODE=''' || A4493PAIS || ''' ' ;
+				SET VL_QRYSQL_1 = VL_QRYSQL_1 || ' AND CURR='''	|| A4493MDA	|| ''' ' ;													
+				EXECUTE IMMEDIATE VL_QRYSQL_1 ;								
+			END IF ;	
+				
+			
+		END FOR RW0 ;
+		
+		-- ADD INTERVAL 1 DAY		
+		SET VL_PDATE = DATE ( DATE ( SUBSTR ( VL_A4469PDATE , 1 , 4 ) || '-' || SUBSTR ( VL_A4469PDATE , 5 , 2 ) || '-' || SUBSTR ( VL_A4469PDATE , 7 , 2 ) ) ) + 1 DAYS ;	
+		SET VL_A4469PDATE = YEAR ( VL_PDATE ) || LPAD ( MONTH ( VL_PDATE ) , 2 , '0' ) || LPAD ( DAY ( VL_PDATE ) , 2 , '0' ) ;
+		
+	END WHILE ;
+		
+--	WHILE ( VL_EOF < 7 ) DO
+--		
+--		SET VL_EOF = VL_EOF + 1;				
+--		SET VL_A4469PDATE_1 = PRAXIS.FN_GET_DATENAME( VL_A4469PDATE );
+--				
+--		-- a SPANISH
+--		SET VL_A4469PDATE_1 = (
+--		CASE VL_A4469PDATE_1
+--	        WHEN 'Sunday'    THEN 'Domingo'
+--	        WHEN 'Monday'    THEN 'Lunes'
+--	        WHEN 'Tuesday'   THEN 'Martes'
+--	        WHEN 'Wednesday' THEN 'Miércoles'
+--	        WHEN 'Thursday'  THEN 'Jueves'
+--	        WHEN 'Friday'    THEN 'Viernes'
+--	        WHEN 'Saturday'  THEN 'Sábado'
+--    	END );
+--	      							
+--		
+--		-- SELECT DAYOFWEEK(DATE( substring('20230308',1,4) ||'-'||substring('20230308',5,2) ||'-'|| substring('20230308',7,2))) FROM SYSIBM.SYSDUMMY1
+--		-- SELECT MOD(DAYOFWEEK(DATE( substring('20230308',1,4)||'-'||substring('20230308',5,2) ||'-'|| substring('20230308',7,2) )) + 5, 7) + 1 FROM SYSIBM.SYSDUMMY1	
+--		-- Semana empieza de Domingo	
+--		SET vl_DiaDeLaSemana = DAYOFWEEK(DATE( substring(VL_A4469PDATE,1,4) ||'-'||substring(VL_A4469PDATE,5,2) ||'-'|| substring(VL_A4469PDATE,7,2))); -- FROM SYSIBM.SYSDUMMY1;
+--		-- Semana empieza de LUNES	
+--		-- SET vl_DiaDeLaSemana =  MOD(DAYOFWEEK(DATE( substring(VL_A4469PDATE,1,4)||'-'||substring(VL_A4469PDATE,5,2) ||'-'|| substring(VL_A4469PDATE,7,2) )) + 5, 7) + 1; -- FROM SYSIBM.SYSDUMMY1;					
+--		
+----		INSERT INTO PRAXIS.qry_log1 VALUES('PARAM EXTRA:');
+----		INSERT INTO PRAXIS.qry_log1 VALUES('VP_FUEN>>'||VP_FUEN);
+----		INSERT INTO PRAXIS.qry_log1 VALUES('VP_PAIS>>'||VP_PAIS);
+--		
+--		SET VL_NHOT = 0;  
+--		RW0: FOR RW0_ AS RW0__ CURSOR FOR
+--		SELECT A4491FUENT, A4491PAIS, A4491MDA, A4491LUN, A4491MAR, A4491MIE, A4491JUE, A4491VIE, A4491SAB, A4491DOM, A4491FLG 
+--		FROM PRAXIS.A4491  
+--		WHERE 	A4491CCUST = VP_CCUST AND 
+--				A4491FUENT = (CASE WHEN VP_FUEN='' THEN A4491FUENT ELSE VP_FUEN END ) AND
+--				A4491PAIS  = (CASE WHEN VP_PAIS='' THEN A4491PAIS ELSE VP_PAIS END )
+--		ORDER BY  A4491FUENT, A4491PAIS		
+--		DO		
+--							
+--			SET VL_COUNTRY = '';
+--			IF 	TRIM(RW0.A4491PAIS) <> '' THEN	
+--				select A3152NPAIS INTO VL_COUNTRY FROM PRAXIS.A3152 
+--				WHERE A3152CPAIS = RW0.A4491PAIS AND A3152CPAIS<>''
+--				FETCH FIRST 1 ROWS ONLY;
+--			END IF; 	
+--									
+--			IF (TRIM(VL_COUNTRY)='')THEN
+--				SET VL_COUNTRY = RW0.A4491FUENT;
+--			END IF;			
+--			SET VL_FOUND = 'S';
+--			SET VL_NHOT = VL_NHOT + 1;
+--			
+--			-- INSERT INTO PRAXIS.qry_log1 VALUES('VL_COUNTRY:' || VL_COUNTRY);
+--						
+--			-- INFORMACION DE VENTAS(DELIVERY)
+--			SET (VL_A4469STATU, VL_A4469IDATE, VL_A4469TSALE, VL_A4469TEXCH, VL_A4469TRFND, VL_A4469TMEMO, VL_A4469TVOID)=('','',0,0,0,0,0);
+--			IF A4491FUENT = 'BSP' THEN			
+--				SELECT A4469STATU, A4469IDATE, A4469TSALE, A4469TEXCH, A4469TRFND, A4469TMEMO, A4469TVOID
+--				INTO VL_A4469STATU, VL_A4469IDATE, VL_A4469TSALE, VL_A4469TEXCH, VL_A4469TRFND, VL_A4469TMEMO, VL_A4469TVOID 
+--				FROM PRAXIS.A4469 
+--				WHERE A4469CCUST='139' AND A4469PDATE=VL_A4469PDATE AND A4469CDPAI=A4491PAIS AND A4469CURCY=A4491MDA;
+--			ELSE
+--				SELECT A4469STATU, A4469IDATE, A4469TSALE, A4469TEXCH, A4469TRFND, A4469TMEMO, A4469TVOID
+--				INTO VL_A4469STATU, VL_A4469IDATE, VL_A4469TSALE, VL_A4469TEXCH, VL_A4469TRFND, VL_A4469TMEMO, VL_A4469TVOID 
+--				FROM PRAXIS.A4469 
+--				WHERE A4469CCUST='139' AND A4469PDATE=VL_A4469PDATE AND A4469SOURC=A4491FUENT;				
+--			END IF;			
+--			
+--			-- DIA 1			
+--			IF vl_DiaDeLaSemana = 1 THEN
+--				SET VL_LABEL1 = '';
+--				IF  A4491DOM = 'S' AND VL_A4469STATU=''  THEN
+--					SET VL_LABEL1 = 'R';
+--				END IF;
+--				-- CAMPO PINTADO EN AZUL: Representa a los archivos que de acuerdo a la frecuencia actual de recepción de 
+--				-- archivos de venta no se reciben por ser fin de semana. Tener en cuenta que la frecuencia solo representa el 
+--				-- pintado de los campos por día (Lunes a Domingo) en caso de recibir el archivo ese día deberá presentar su 
+--				-- información en el campo pintado. Tener en cuenta que para los registro BSPs con diferente moneda se deberán pintar ambos.
+--				IF  A4491DOM = 'N' THEN
+--					SET VL_LABEL1 = 'A';
+--				END IF;					
+--			END IF;
+--			
+--			-- DIA 2			
+--			IF vl_DiaDeLaSemana = 2 THEN
+--				SET VL_LABEL2 = '';
+--				IF  A4491LUN = 'S' AND VL_A4469STATU='' THEN
+--					SET VL_LABEL2 = 'R';
+--				END IF;
+--				IF  A4491LUN = 'N' THEN
+--					SET VL_LABEL2 = 'A';
+--				END IF;				
+--			END IF;
+--			
+--			-- DIA 3			
+--			IF vl_DiaDeLaSemana = 3 THEN
+--				SET VL_LABEL3 = '';
+--				IF  A4491MAR = 'S' AND VL_A4469STATU='' THEN
+--					SET VL_LABEL3 = 'R';
+--				END IF;
+--				IF  A4491MAR = 'N' THEN
+--					SET VL_LABEL3 = 'A';
+--				END IF;	
+--			END IF;
+--			-- DIA 4			
+--			IF vl_DiaDeLaSemana = 4 THEN
+--				SET VL_LABEL4 = '';
+--				IF  A4491MIE = 'S' AND VL_A4469STATU='' THEN
+--					SET VL_LABEL4 = 'R';
+--				END IF;
+--				IF  A4491MIE = 'N' THEN
+--					SET VL_LABEL4 = 'A';
+--				END IF;	
+--			END IF;
+--			-- DIA 5			
+--			IF vl_DiaDeLaSemana = 5 THEN
+--				SET VL_LABEL5 = '';
+--				IF  A4491JUE = 'S' AND VL_A4469STATU='' THEN
+--					SET VL_LABEL5 = 'R';
+--				END IF;
+--				IF  A4491JUE = 'N' THEN
+--					SET VL_LABEL5 = 'A';
+--				END IF;	
+--			END IF;
+--			-- DIA 6			
+--			IF vl_DiaDeLaSemana = 6 THEN
+--				SET VL_LABEL6 = '';
+--				IF  A4491VIE = 'S' AND VL_A4469STATU='' THEN
+--					SET VL_LABEL6 = 'R';
+--				END IF;
+--				IF  A4491VIE = 'N' THEN
+--					SET VL_LABEL6 = 'A';
+--				END IF;					
+--			END IF;			
+--			-- DIA7			
+--			IF vl_DiaDeLaSemana = 7 THEN
+--				SET VL_LABEL7 = '';
+--				IF  A4491SAB = 'S' AND VL_A4469STATU='' THEN
+--					SET VL_LABEL7 = 'R';
+--				END IF;
+--				IF  A4491SAB = 'N' THEN
+--					SET VL_LABEL7 = 'A';
+--				END IF;	
+--			END IF;
+--						
+--			SET VL_QRYSQL = 'INSERT INTO SESSION.TEMP99 ( NHOT, COUNTRY, COUNTRY_CODE, CURR, '; 
+--			SET VL_QRYSQL =  VL_QRYSQL || 'PRDA' || VL_EOF ||','; 
+--			SET VL_QRYSQL =  VL_QRYSQL || 'PRDA' || VL_EOF||'_,';
+--			SET VL_QRYSQL =  VL_QRYSQL || 'STATUS' || VL_EOF||',';
+--			SET VL_QRYSQL =  VL_QRYSQL || 'ISSUDT' || VL_EOF||',';
+--			
+--			SET VL_QRYSQL =  VL_QRYSQL || 'SALE' || VL_EOF||',';
+--			SET VL_QRYSQL =  VL_QRYSQL || 'EXCH' || VL_EOF||',';
+--			SET VL_QRYSQL =  VL_QRYSQL || 'RFND' || VL_EOF||',';
+--			SET VL_QRYSQL =  VL_QRYSQL || 'MEMO' || VL_EOF||',';
+--			SET VL_QRYSQL =  VL_QRYSQL || 'VOID' || VL_EOF||',';
+--			SET VL_QRYSQL =  VL_QRYSQL || 'FLG' || VL_EOF||','; -- new				
+--			SET VL_QRYSQL =  VL_QRYSQL || 'LABEL' || VL_EOF; 		
+--			SET VL_QRYSQL =  VL_QRYSQL || ' )';
+--			
+--			SET VL_QRYSQL =  VL_QRYSQL || ' VALUES (''';
+--    		SET VL_QRYSQL =  VL_QRYSQL || VL_NHOT ||''','''|| TRIM(VL_COUNTRY) ||''','''|| A4491PAIS ||''','''|| A4491MDA ||''',''';
+--			SET VL_QRYSQL =  VL_QRYSQL || VL_A4469PDATE ||''','''|| VL_A4469PDATE_1 ||''','''|| TRIM(VL_A4469STATU) ||''','''|| TRIM(VL_A4469IDATE) ||''',''';
+--			SET VL_QRYSQL =  VL_QRYSQL || VL_A4469TSALE ||''','''|| VL_A4469TEXCH ||''','''|| VL_A4469TRFND ||''','''|| VL_A4469TMEMO ||''','''|| VL_A4469TVOID ||''','''|| A4491FLG||''',''';
+--									
+--			SET VL_QRYSQL = 
+--			CASE vl_DiaDeLaSemana 
+--				WHEN 1 THEN VL_QRYSQL || VL_LABEL1 ||''')'
+--				WHEN 2 THEN VL_QRYSQL || VL_LABEL2 ||''')'
+--				WHEN 3 THEN VL_QRYSQL || VL_LABEL3 ||''')'
+--				WHEN 4 THEN VL_QRYSQL || VL_LABEL4 ||''')'
+--				WHEN 5 THEN VL_QRYSQL || VL_LABEL5 ||''')'
+--				WHEN 6 THEN VL_QRYSQL || VL_LABEL6 ||''')'
+--				WHEN 7 THEN VL_QRYSQL || VL_LABEL7 ||''')'
+--			END;
+--			
+--			-- INSERT INTO PRAXIS.qry_log1 VALUES(VL_QRYSQL);
+--			
+--			SET VL_FLAG = 'N';
+--			IF A4491FUENT = 'BSP' THEN		
+--				SELECT 'S' INTO VL_FLAG FROM SESSION.temp99 WHERE COUNTRY_CODE = A4491PAIS AND CURR=A4491MDA;
+--			ELSE
+--				SELECT 'S' INTO VL_FLAG FROM SESSION.temp99 WHERE COUNTRY = A4491FUENT;  -- ASR/ARC
+--			END IF;
+--			
+--			IF IFNULL(VL_FLAG,'N') = 'N' THEN				
+--			 	EXECUTE IMMEDIATE VL_QRYSQL; -- INSERT
+--			ELSE
+--				SET VL_QRYSQL_1 = 'UPDATE SESSION.temp99 SET ' ;	
+--				SET VL_QRYSQL_1 = VL_QRYSQL_1 || ' NHOT=''' || VL_NHOT|| ''',' ;		
+--				SET VL_QRYSQL_1 = VL_QRYSQL_1 || ' PRDA'||VL_EOF||'=''' || VL_A4469PDATE || ''', ' ;									
+--				SET VL_QRYSQL_1 = VL_QRYSQL_1 || ' PRDA'||VL_EOF||'_ =''' || VL_A4469PDATE_1 || ''', ';	
+--				SET VL_QRYSQL_1 = VL_QRYSQL_1 || ' STATUS'||VL_EOF||'=''' || TRIM(VL_A4469STATU) || ''', ' ;
+--				SET VL_QRYSQL_1 = VL_QRYSQL_1 || ' ISSUDT'||VL_EOF||'=''' || TRIM(VL_A4469IDATE) || ''', ' ;
+--				SET VL_QRYSQL_1 = VL_QRYSQL_1 || ' SALE'||VL_EOF||'=''' || VL_A4469TSALE || ''', ' ;
+--				SET VL_QRYSQL_1 = VL_QRYSQL_1 || ' EXCH'||VL_EOF||'=''' || VL_A4469TEXCH || ''', ' ;
+--				SET VL_QRYSQL_1 = VL_QRYSQL_1 || ' RFND'||VL_EOF||'=''' || VL_A4469TRFND || ''', ' ;
+--				SET VL_QRYSQL_1 = VL_QRYSQL_1 || ' MEMO'||VL_EOF||'=''' || VL_A4469TMEMO || ''', ' ;
+--				SET VL_QRYSQL_1 = VL_QRYSQL_1 || ' VOID'||VL_EOF||'=''' || VL_A4469TVOID || ''', ' ;
+--				SET VL_QRYSQL_1 = 
+--				CASE vl_DiaDeLaSemana 
+--					WHEN 1 THEN VL_QRYSQL_1 || ' LABEL'||VL_EOF||'=''' || VL_LABEL1 || ''' '
+--					WHEN 2 THEN VL_QRYSQL_1 || ' LABEL'||VL_EOF||'=''' || VL_LABEL2 || ''' ' 
+--					WHEN 3 THEN VL_QRYSQL_1 || ' LABEL'||VL_EOF||'=''' || VL_LABEL3 || ''' '
+--					WHEN 4 THEN VL_QRYSQL_1 || ' LABEL'||VL_EOF||'=''' || VL_LABEL4 || ''' '
+--					WHEN 5 THEN VL_QRYSQL_1 || ' LABEL'||VL_EOF||'=''' || VL_LABEL5 || ''' ' 
+--					WHEN 6 THEN VL_QRYSQL_1 || ' LABEL'||VL_EOF||'=''' || VL_LABEL6 || ''' '
+--					WHEN 7 THEN VL_QRYSQL_1 || ' LABEL'||VL_EOF||'=''' || VL_LABEL7 || ''' '
+--				END;
+--				-- new
+--				SET VL_QRYSQL_1 = 
+--				CASE vl_DiaDeLaSemana 
+--					WHEN 1 THEN VL_QRYSQL_1 || ' ,FLG'||VL_EOF||'=''' || A4491FLG || ''' '
+--					WHEN 2 THEN VL_QRYSQL_1 || ' ,FLG'||VL_EOF||'=''' || A4491FLG || ''' ' 
+--					WHEN 3 THEN VL_QRYSQL_1 || ' ,FLG'||VL_EOF||'=''' || A4491FLG || ''' '
+--					WHEN 4 THEN VL_QRYSQL_1 || ' ,FLG'||VL_EOF||'=''' || A4491FLG || ''' '
+--					WHEN 5 THEN VL_QRYSQL_1 || ' ,FLG'||VL_EOF||'=''' || A4491FLG || ''' ' 
+--					WHEN 6 THEN VL_QRYSQL_1 || ' ,FLG'||VL_EOF||'=''' || A4491FLG || ''' '
+--					WHEN 7 THEN VL_QRYSQL_1 || ' ,FLG'||VL_EOF||'=''' || A4491FLG || ''' '
+--				END;
+--												
+--				SET VL_QRYSQL_1 = VL_QRYSQL_1 || ' WHERE COUNTRY_CODE=''' || A4491PAIS || ''' ' ;
+--				SET VL_QRYSQL_1 = VL_QRYSQL_1 || ' AND CURR='''	|| A4491MDA	|| ''' ' ;									
+--				INSERT INTO PRAXIS.qry_log1 VALUES(VL_QRYSQL_1);
+--				EXECUTE IMMEDIATE VL_QRYSQL_1; 								
+--			END IF;	
+--								
+--		END FOR RW0;
+--		
+--		-- ADD INTERVAL 1 DAY		
+--		SET VL_PDATE = DATE( DATE(SUBSTR(VL_A4469PDATE, 1, 4) || '-' || SUBSTR(VL_A4469PDATE, 5, 2) || '-' || SUBSTR(VL_A4469PDATE, 7, 2)) ) + 1 DAYS;	
+--		SET VL_A4469PDATE = YEAR ( VL_PDATE ) || LPAD ( MONTH ( VL_PDATE ) , 2 , '0' ) || LPAD(DAY (VL_PDATE),2,'0');
+--			
+--	END WHILE;
+		
+		
+--	RW1: FOR RW1_ AS RW1__ CURSOR FOR
+--	SELECT COUNTRY_CODE FROM SESSION.TEMP99  
+--	WHERE COUNTRY_CODE IN('AR','BO','CL','PH','PY','RO','RS')	
+--	DO	
+--		-- ++++++ 01	
+--		SET VL_COUNT = 0;			
+--		SELECT COUNT(0) INTO VL_COUNT FROM SESSION.temp99 WHERE COUNTRY_CODE = RW1.COUNTRY_CODE AND STATUS1 = '';
+--		IF ( VL_COUNT = 2 )THEN
+--			UPDATE SESSION.temp99 SET LABEL1='R' WHERE COUNTRY_CODE = RW1.COUNTRY_CODE;			
+--		ELSE
+--			UPDATE SESSION.temp99 SET LABEL1='' WHERE COUNTRY_CODE = RW1.COUNTRY_CODE;			
+--		END IF;
+--		-- REGISTRO ADICIONAL(NO ENTRA AL CONTEO AL HOTS
+--		UPDATE SESSION.temp99 SET FLG1='Y' 
+--		WHERE COUNTRY_CODE = RW1.COUNTRY_CODE AND NHOT IN( SELECT MAX(NHOT) FROM SESSION.temp99 WHERE COUNTRY_CODE = RW1.COUNTRY_CODE);
+--		-- ++++++
+--		
+--		-- ++++++ 02	
+--		SET VL_COUNT = 0;			
+--		SELECT COUNT(0) INTO VL_COUNT FROM SESSION.temp99 WHERE COUNTRY_CODE = RW1.COUNTRY_CODE AND STATUS2 = '';
+--		IF ( VL_COUNT = 2 )THEN
+--			UPDATE SESSION.temp99 SET LABEL2='R' WHERE COUNTRY_CODE = RW1.COUNTRY_CODE;			
+--		ELSE
+--			UPDATE SESSION.temp99 SET LABEL2='' WHERE COUNTRY_CODE = RW1.COUNTRY_CODE;			
+--		END IF;
+--		-- REGISTRO ADICIONAL(NO ENTRA AL CONTEO AL HOTS
+--		UPDATE SESSION.temp99 SET FLG2='Y' 
+--		WHERE COUNTRY_CODE = RW1.COUNTRY_CODE AND NHOT IN( SELECT MAX(NHOT) FROM SESSION.temp99 WHERE COUNTRY_CODE = RW1.COUNTRY_CODE);
+--		-- ++++++
+--		
+--		-- ++++++ 03	
+--		SET VL_COUNT = 0;			
+--		SELECT COUNT(0) INTO VL_COUNT FROM SESSION.temp99 WHERE COUNTRY_CODE = RW1.COUNTRY_CODE AND STATUS3 = '';
+--		IF ( VL_COUNT = 2 )THEN
+--			UPDATE SESSION.temp99 SET LABEL3='R' WHERE COUNTRY_CODE = RW1.COUNTRY_CODE;			
+--		ELSE
+--			UPDATE SESSION.temp99 SET LABEL3='' WHERE COUNTRY_CODE = RW1.COUNTRY_CODE;			
+--		END IF;
+--		-- REGISTRO ADICIONAL(NO ENTRA AL CONTEO AL HOTS
+--		UPDATE SESSION.temp99 SET FLG3='Y' 
+--		WHERE COUNTRY_CODE = RW1.COUNTRY_CODE AND NHOT IN( SELECT MAX(NHOT) FROM SESSION.temp99 WHERE COUNTRY_CODE = RW1.COUNTRY_CODE);
+--		-- ++++++
+--		
+--		-- ++++++ 04	
+--		SET VL_COUNT = 0;			
+--		SELECT COUNT(0) INTO VL_COUNT FROM SESSION.temp99 WHERE COUNTRY_CODE = RW1.COUNTRY_CODE AND STATUS4 = '';
+--		IF ( VL_COUNT = 2 )THEN
+--			UPDATE SESSION.temp99 SET LABEL4='R' WHERE COUNTRY_CODE = RW1.COUNTRY_CODE;			
+--		ELSE
+--			UPDATE SESSION.temp99 SET LABEL4='' WHERE COUNTRY_CODE = RW1.COUNTRY_CODE;			
+--		END IF;
+--		-- REGISTRO ADICIONAL(NO ENTRA AL CONTEO AL HOTS
+--		UPDATE SESSION.temp99 SET FLG4='Y' 
+--		WHERE COUNTRY_CODE = RW1.COUNTRY_CODE AND NHOT IN( SELECT MAX(NHOT) FROM SESSION.temp99 WHERE COUNTRY_CODE = RW1.COUNTRY_CODE);
+--		-- ++++++
+--		
+--		-- ++++++ 05	
+--		SET VL_COUNT = 0;			
+--		SELECT COUNT(0) INTO VL_COUNT FROM SESSION.temp99 WHERE COUNTRY_CODE = RW1.COUNTRY_CODE AND STATUS5 = '';
+--		IF ( VL_COUNT = 2 )THEN
+--			UPDATE SESSION.temp99 SET LABEL5='R' WHERE COUNTRY_CODE = RW1.COUNTRY_CODE;			
+--		ELSE
+--			UPDATE SESSION.temp99 SET LABEL5='' WHERE COUNTRY_CODE = RW1.COUNTRY_CODE;			
+--		END IF;
+--		-- REGISTRO ADICIONAL(NO ENTRA AL CONTEO AL HOTS
+--		UPDATE SESSION.temp99 SET FLG5='Y' 
+--		WHERE COUNTRY_CODE = RW1.COUNTRY_CODE AND NHOT IN( SELECT MAX(NHOT) FROM SESSION.temp99 WHERE COUNTRY_CODE = RW1.COUNTRY_CODE);
+--		-- ++++++
+--		
+--		-- ++++++ 06	
+--		SET VL_COUNT = 0;			
+--		SELECT COUNT(0) INTO VL_COUNT FROM SESSION.temp99 WHERE COUNTRY_CODE = RW1.COUNTRY_CODE AND STATUS6 = '';
+--		IF ( VL_COUNT = 2 )THEN
+--			UPDATE SESSION.temp99 SET LABEL6='R' WHERE COUNTRY_CODE = RW1.COUNTRY_CODE;			
+--		ELSE
+--			UPDATE SESSION.temp99 SET LABEL6='' WHERE COUNTRY_CODE = RW1.COUNTRY_CODE;			
+--		END IF;
+--		-- REGISTRO ADICIONAL(NO ENTRA AL CONTEO AL HOTS
+--		UPDATE SESSION.temp99 SET FLG6='Y' 
+--		WHERE COUNTRY_CODE = RW1.COUNTRY_CODE AND NHOT IN( SELECT MAX(NHOT) FROM SESSION.temp99 WHERE COUNTRY_CODE = RW1.COUNTRY_CODE);
+--		-- ++++++
+--		
+--		-- ++++++ 07	
+--		SET VL_COUNT = 0;			
+--		SELECT COUNT(0) INTO VL_COUNT FROM SESSION.temp99 WHERE COUNTRY_CODE = RW1.COUNTRY_CODE AND STATUS7 = '';
+--		IF ( VL_COUNT = 2 )THEN
+--			UPDATE SESSION.temp99 SET LABEL7='R' WHERE COUNTRY_CODE = RW1.COUNTRY_CODE;			
+--		ELSE
+--			UPDATE SESSION.temp99 SET LABEL7='' WHERE COUNTRY_CODE = RW1.COUNTRY_CODE;			
+--		END IF;
+--		-- REGISTRO ADICIONAL(NO ENTRA AL CONTEO AL HOTS
+--		UPDATE SESSION.temp99 SET FLG7='Y' 
+--		WHERE COUNTRY_CODE = RW1.COUNTRY_CODE AND NHOT IN( SELECT MAX(NHOT) FROM SESSION.temp99 WHERE COUNTRY_CODE = RW1.COUNTRY_CODE);
+--		-- ++++++
+--			
+--	END FOR RW1;
+		
+	SET VL_SQLQRY = 'SELECT ROW_NUMBER() OVER( ORDER BY COUNTRY_CODE ) AS NHOT, COUNTRY, COUNTRY_CODE, CURR,
+	 PRDA1, PRDA1_, STATUS1, ISSUDT1, SALE1, EXCH1, RFND1, MEMO1, VOID1, LABEL1, FLG1, 
+	 PRDA2, PRDA2_, STATUS2, ISSUDT2, SALE2, EXCH2, RFND2, MEMO2, VOID2, LABEL2, FLG2, 
+	 PRDA3, PRDA3_, STATUS3, ISSUDT3, SALE3, EXCH3, RFND3, MEMO3, VOID3, LABEL3, FLG3, 
+	 PRDA4, PRDA4_, STATUS4, ISSUDT4, SALE4, EXCH4, RFND4, MEMO4, VOID4, LABEL4, FLG4, 
+	 PRDA5, PRDA5_, STATUS5, ISSUDT5, SALE5, EXCH5, RFND5, MEMO5, VOID5, LABEL5, FLG5, 
+	 PRDA6, PRDA6_, STATUS6, ISSUDT6, SALE6, EXCH6, RFND6, MEMO6, VOID6, LABEL6, FLG6, 
+	 PRDA7, PRDA7_, STATUS7, ISSUDT7, SALE7, EXCH7, RFND7, MEMO7, VOID7, LABEL7, FLG7
+	 FROM SESSION.temp99 ' ;
+	PREPARE STMTQRY FROM VL_SQLQRY ;
+	OPEN CURQRY ;
+		
+	END

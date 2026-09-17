@@ -1,0 +1,165 @@
+CREATE OR REPLACE PROCEDURE PRAXISMP.SQP05134 ( IN IN_CCUST VARCHAR(3),
+                                     IN IN_DATEFROM VARCHAR(8),
+                                     IN IN_DATETO VARCHAR(8),
+                                     IN IN_DATE VARCHAR(10),
+                                     IN IN_MERCHANT VARCHAR(20),
+                                     IN IN_STVAL VARCHAR(1),
+                                     IN IN_PNR VARCHAR(6),
+                                     IN IN_TRANSTYPE VARCHAR(4),
+                                     IN IN_PROCTYPE VARCHAR(10),
+                                     IN IN_PROCTYPESQ VARCHAR(10),
+                                     IN IN_SCOUNTRY VARCHAR(2),
+                                     IN IN_SCURRENCY VARCHAR(3),
+                                     IN IN_PCURRENCY VARCHAR(3),
+                                     IN IN_SCARDN VARCHAR(19),
+                                     IN IN_SAUTHOC VARCHAR(9),
+                                     IN IN_AREFNBR VARCHAR(23),
+                                     IN IN_TICKET VARCHAR(13),
+                                     --IN IN_ARN VARCHAR(25),
+                                     INOUT IO_PAGNUM INTEGER,
+                                     INOUT IO_PAGROW INTEGER,
+                                     INOUT IO_TOTPAG INTEGER,
+                                     INOUT IO_TOTROW INTEGER )
+	RESULT SETS 1
+	LANGUAGE SQL
+	SPECIFIC PRAXISMP.SQP05134
+
+BEGIN
+	/*******************************************************************************************************
+ 	* 09/09/2025 CREATE PROGRAM DP
+ 	* TITLE PROGRAM: SUMMARY - Load Detail Settlement
+ 	*
+ 	* DEFINITIONS:
+ 	-
+ 	*********************************************************************************************************/
+
+
+	DECLARE V_SQL VARCHAR ( 5000 ) ;
+	DECLARE V_WHERE VARCHAR ( 1500 ) DEFAULT '' ;
+	DECLARE V_PROCTYPE VARCHAR ( 10 ) ;
+
+	--paginado
+	DECLARE PAGROWINIT INTEGER ;
+	DECLARE SQLCNT01 VARCHAR ( 5000 ) ;
+	DECLARE SQLPAG01 VARCHAR ( 5000 ) ;
+	DECLARE CURQRY01 CURSOR FOR STMTQRY01 ;
+	DECLARE CURCNT01 CURSOR FOR STMTCNT01 ;
+
+	SET V_SQL = '
+	SELECT ROW_NUMBER() OVER(ORDER BY A.AREFNBR) AS RN,
+	A.*,
+	IFNULL((SELECT A4451DESC1 FROM PRAXISMP.A4451 K WHERE A4451KEY1= ''PR'' AND A4451KEY3 = A.PROCTYPE AND A4451KEY2 = A.PROCTYPESQ),'''') DESC_PROCTYPE
+	FROM PRAXISMP.A4331 A
+	WHERE CCUST = ''{CCUST}'' AND {DATE} BETWEEN ''{FROM}'' AND ''{TO}''
+	{WHERE}' ;
+
+	SET V_SQL = REPLACE ( V_SQL , '{CCUST}' , IN_CCUST ) ;
+
+	SET V_SQL = REPLACE ( V_SQL , '{DATE}' , IN_DATE ) ;
+
+	SET V_SQL = REPLACE ( V_SQL , '{FROM}' , IN_DATEFROM ) ;
+	SET V_SQL = REPLACE ( V_SQL , '{TO}' , IN_DATETO ) ;
+
+	SET V_SQL = REPLACE ( V_SQL , '{MERCHANT}' , IN_MERCHANT ) ;
+
+
+	IF IN_PROCTYPE <> '' THEN
+		SET V_WHERE = V_WHERE || ' AND PROCTYPE = ''' || TRIM ( IN_PROCTYPE ) || '''' ;
+	END IF ;
+
+	IF IN_PROCTYPESQ <> '' THEN
+		SET V_WHERE = V_WHERE || ' AND PROCTYPESQ = ''' || TRIM ( IN_PROCTYPESQ ) || '''' ;
+	END IF ;
+
+	IF IN_SCOUNTRY <> '' THEN
+		SET V_WHERE = V_WHERE || ' AND SCOUNTRY = ''' || TRIM ( IN_SCOUNTRY ) || '''' ;
+	END IF ;
+
+	IF IN_MERCHANT <> '' THEN
+		SET V_WHERE = V_WHERE || ' AND PMERCHID = ''' || TRIM ( IN_MERCHANT ) || '''' ;
+	END IF ;
+
+	IF IN_STVAL <> '' THEN
+		SET V_WHERE = V_WHERE || ' AND STVAL = ''' || IN_STVAL || '''' ;
+	END IF ;
+
+	IF IN_PNR <> '' THEN
+		SET V_WHERE = V_WHERE || ' AND SPNR = ''' || IN_PNR || '''' ;
+	END IF ;
+
+	IF IN_TRANSTYPE <> '' THEN
+		SET V_WHERE = V_WHERE || ' AND TRANSTYPE = ''' || IN_TRANSTYPE || '''' ;
+	END IF ;
+
+	IF IN_SCURRENCY <> '' THEN
+		SET V_WHERE = V_WHERE || ' AND SCURRENCY = ''' || IN_SCURRENCY || '''' ;
+	END IF ;
+
+	IF IN_PCURRENCY <> '' THEN
+		SET V_WHERE = V_WHERE || ' AND PCURRENCY = ''' || IN_PCURRENCY || '''' ;
+	END IF ;
+
+	IF IN_SCARDN <> '' THEN
+		SET V_WHERE = V_WHERE || ' AND SCARDN LIKE ''' || IN_SCARDN || '''' ;
+	END IF ;
+
+	IF IN_SAUTHOC <> '' THEN
+		SET V_WHERE = V_WHERE || ' AND SAUTHOC = ''' || IN_SAUTHOC || '''' ;
+	END IF ;
+
+	IF IN_AREFNBR <> '' THEN
+		SET V_WHERE = V_WHERE || ' AND AREFNBR = ''' || TRIM ( IN_AREFNBR ) || '''' ;
+	END IF ;
+
+	IF IN_TICKET <> '' THEN
+		SET V_WHERE = V_WHERE || ' AND TICKET = ''' || TRIM ( IN_TICKET ) || '''' ;
+	END IF ;
+	
+	--IF IN_ARN <> '' THEN
+	--	SET V_WHERE = V_WHERE || ' AND ARN = ''' || IN_ARN || '''' ;
+	--END IF ;
+
+
+
+	SET V_SQL = REPLACE ( V_SQL , '{WHERE}' , V_WHERE ) ;
+
+
+	--TRUNCATE TABLE PRAXISMP.X3170;
+	--INSERT INTO PRAXISMP.X3170 VALUES('SQP05134',V_SQL);
+
+	IF IO_TOTROW = - 1 THEN
+		SET SQLCNT01 = ' SELECT COUNT (*) AS F_TOTROW FROM ( ' || V_SQL ;
+
+		SET SQLCNT01 = SQLCNT01 CONCAT ' ) AS TBCOUNT' ;
+
+		PREPARE STMTCNT01 FROM SQLCNT01 ;
+		OPEN CURCNT01 ;
+		FETCH_LOOP :
+			LOOP
+			FETCH CURCNT01 INTO IO_TOTROW ;
+			LEAVE FETCH_LOOP ;
+			END LOOP FETCH_LOOP ;
+			CLOSE CURCNT01 ;
+	END IF ;
+
+	SET IO_PAGNUM = PRAXIS . F0001 ( 'PAGNUM' , IO_PAGNUM , IO_PAGROW , IO_TOTPAG , IO_TOTROW ) ;
+	SET IO_PAGROW = PRAXIS . F0001 ( 'PAGROW' , IO_PAGNUM , IO_PAGROW , IO_TOTPAG , IO_TOTROW ) ;
+	SET IO_TOTPAG = PRAXIS . F0001 ( 'TOTPAG' , IO_PAGNUM , IO_PAGROW , IO_TOTPAG , IO_TOTROW ) ;
+	SET IO_TOTROW = PRAXIS . F0001 ( 'TOTROW' , IO_PAGNUM , IO_PAGROW , IO_TOTPAG , IO_TOTROW ) ;
+	SET PAGROWINIT = PRAXIS . F0001 ( 'PRINIT' , IO_PAGNUM , IO_PAGROW , IO_TOTPAG , IO_TOTROW ) ;
+
+	SET SQLPAG01 = 'SELECT * FROM ( ' CONCAT V_SQL CONCAT ' ) AS
+	RS WHERE RS.RN >  ' CONCAT PAGROWINIT ;
+	IF IO_PAGROW > 0 THEN
+		SET SQLPAG01 = SQLPAG01 CONCAT ' FETCH FIRST ' CONCAT IO_PAGROW CONCAT ' ROWS ONLY' ;
+	END IF ;
+
+
+	PREPARE STMTQRY01 FROM SQLPAG01 ;
+	OPEN CURQRY01 ;
+
+END
+
+
+
+GRANT ALL ON PROCEDURE PRAXISMP.SQP05134 TO PUBLIC  

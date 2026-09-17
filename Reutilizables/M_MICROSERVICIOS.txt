@@ -1,0 +1,23 @@
+--- MICROSERVICIOS ---
+-abrir terminal
+	 wsl
+	 wsl --shutdown
+	 ls
+	 cd repositories/mi-praxis-am-web/
+	 antigravity .
+	 
+-- ejecutar
+TOKEN WSL   
+ ./vault-login.sh
+---no  ./start-dev.sh
+ ./home.sh  y lugo para seleccionar TAB
+
+user : yadira
+contraseña: JABBEA
+	 
+-- Lueg de jalar cambvios de main
+yarn en : shared, common-services-ms, auth-ms, client_gateway, (modulo que usas)
+
+	 
+-- frontend
+prototype.url = API_BASE + '/sales/sales-masterdata/processing-commissions';

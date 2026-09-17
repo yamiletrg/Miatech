@@ -1,0 +1,52 @@
+AMBIENTE	USUARIO		CONTRASEÑA	IP	   		PUERTO		SESION		
+AM-DEV		SAP54D		12345		10.0.0.185		    23	
+AM-TEST		SAP54T		ZXCVBNM1	10.19.17.21		    23		SISSAP54_2
+AV-DEV		SAV54D		0MIATECH	10.0.0.217		    23	
+AV-TEST		SAV54T		12345678	10.0.0.47		    23	
+AV-TEST		PXAVAPIT	Miatech1	10.0.0.47		    23	
+AV-TEST		SAV51T	    	asd4asd3	10.0.0.47		    23	
+AV-DEV		PXAVAPID	Miatech1	10.0.0.217		    23	
+MARCACION	SAP54		ASDFGHJK1	10.0.0.25		    23	        
+AM-PROD		SAP54		ASDFGHJK1	10.19.17.25      
+AM-PROD       	USRWEB      	WRSE001B        10.19.17.25  
+JS-DEV        	SAJ45T      	valentin3	10.0.0.47
+JENKINS       	yadira      	yadira      	http://10.210.0.5:8080/6
+AUDITORIA	JLEYVA      	SUR5NOR6
+JS-TEST       	SAJ54T      	6FAMILIA        10.0.0.47                       	SISSAP54 /SISSAP54_
+AM-PROD       	SAP03      	STNGRYAFC4      10.0.0.25  
+AM-PROD       	SAP19      	zaq1xsw2        10.0.0.25  
+
+
+
+
+--------------------------------------------------------------------------------------
+wsl: Miatech2026
+
+-------------- 
+--------------------------------------------------------------------------------------
+TOKEN WSL   
+ ./vault-login.sh
+ ./home.sh  y lugo para seleccionar TAB
+user : yadira
+contraseña: JABBEA
+url crear secret: http://10.0.0.111:8200/ui/vault/auth
+
+
+
+ token clásico:
+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
+--------------------------------------------------------------------------------------
+JENKINS 
+http://10.210.0.5:8080/
+yadira
+yadira
+
+--------------------------------------------------------------------------------------
+
+
+TAX - https://faremanager.atpco.net/fmhome/login.jsp
+XAM2PIM // Pablito1
+XAM1ALV // cirio25a
+
+
+------------------------------------------------------------------------------------------------------------------------------

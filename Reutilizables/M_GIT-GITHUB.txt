@@ -1,0 +1,23 @@
+====================================================
+GUÍA RÁPIDA - GIT
+====================================================
+git stash       ->  guardar cambios
+git stash pop   ->  recuperar cambios
+
+
+git checkout prod 				-> te paras en la rama prod
+git reset --hard test			-> mueve prod al mismo commit que test, descartando cualquier cambio local
+git push origin prod --force	-> sube prod al remoto sobrescribiendo su historial (prod queda igual a test)
+
+
+====================================================
+GUÍA RÁPIDA - GITHUB
+====================================================
+
+
+
+
+
+
+
+

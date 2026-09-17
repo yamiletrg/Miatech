@@ -1,0 +1,48 @@
+	 PABLO									 		MICROSERVICIO													RUTA PRAXIS
+  ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	OK|Accounting Master Process		->/sales-commissions/accounting-master-process-consortia			-->
+	OK|Commissions GSA					->/sales-masterdata/commissions-gsa									-->
+	OK|Commissions FOB					->/sales-masterdata/commissions-fob									-->
+	OK|Processing Commissions			->/sales-masterdata/processing-commissions							-->  no existe el programa en produccion (se migro logica)
+	OK|Consortium Commissions			->/sales-masterdata/consortium-commissions							-->  no existe el programa en produccion (se migro logica)
+	OK|Invoice Commission FOB			->/sales-commissions/invoice-commission-fob-fobs					-->
+	  
+	OK|Load ATPCO						->/salesaudit-core/load-atpco-atpco									-->
+	OK|Load Master Sales				->/salesaudit-core/load-master-sales-sales							-->
+	OK|Fares ATPCO						->/salesaudit-core/fares-atpco-atpco								-->
+	OK|Fare Class ATPCO					->/salesaudit-core/fare-class-atpco-atpco							-->
+	OK|Rules ATPCO						->/salesaudit-core/rules-atpco-atpco								-->
+	  |Taxes by code					->/salesaudit-core/taxes-by-code-ttbs								-->
+	  |Taxes by segment					->/salesaudit-core/taxes-by-segment-ttbs							-->
+	  
+	  
+	  BACKLOG
+	  |Payment Notification Report		->/sales-commissions/payment-notification-report-fobs				-->sales/comissions/fob's/Payment Notification Report
+	  |Accounting Master Process		->/sales-commissions/accounting-master-process-fobs					-->sales/comissions/fob's/Accounting Master	Process
+	  |GSA Record						->/sales-commissions/gsa-record-gsa									-->sales/comissions/gsa/GSA Record
+	  |Invoice Commission GSA			->/sales-commissions/invoice-commission-gsa-gsa						-->sales/comissions/gsa/Invoice Commission GSA
+	  |Interline GSA Commision Report	->/sales-commissions/interline-gsa-commision-report-gsa				-->sales/comissions/gsa/Interline GSA Commision Report
+	  |Condition IATA Exclude			->/sales-commissions/condition-iata-exclude-gsa-commission			-->sales/comissions/gsa/Commission/Condition IATA Exclude
+	  |Conditions						->/sales-commissions/conditions-gsa-commission						-->sales/comissions/gsa/Commission/Conditions
+	  |Commission BSP & ASR				->/sales-commissions/commission-bsp-&-asr-gsa-commission			-->sales/comissions/gsa/Commission/Commission BSP & ASR
+	  |Country Objective				->/sales-commissions/country-objective-gsa-incentive				-->sales/comissions/gsa/Incentive/Country Objective
+	  |Conditions						->/sales-commissions/country-objective-gsa-incentive				-->sales/comissions/gsa/Incentive/Conditions
+	  |Summary							->/sales-commissions/summary-gsa-incentive							-->sales/comissions/gsa/Incentive/Summary
+	  |Calculation						->/sales-commissions/calculation-gsa-incentive						-->sales/comissions/gsa/Incentive/Calculation
+	  |Incentive						->/sales-commissions/incentive-gsa-incentive						-->sales/comissions/gsa/Incentive/Incentive
+  
+  
+  
+  
+  =================================================================
+  YADIRA
+	  |Accounting Master FG				->/sales-masterdata/accounting-master-fg-accounting					-->		
+	  |Accounting Master Sales			->/sales-masterdata/accounting-master-sales-accounting				-->		
+	  |Accounting Master Tax			->/sales-masterdata/accounting-master-tax-accounting				-->		  
+	  |Accounting Master Client			->/sales-masterdata/accounting-master-client-accounting				-->	  
+	  |Accounting Supplier				->/sales-masterdata/accounting-supplier-accounting					-->	  
+	  |Accounting Master CCAM			->/sales-masterdata/accounting-master-ccam-accounting				-->	    
+	  |Accounting Master UATP			->/sales-masterdata/accounting-master-uatp-accounting				-->	    
+	  |Accounting Master PAGA TODO		->/sales-masterdata/accounting-master-paga-todo-accounting			-->	    
+	  |Accounting Master Travel Voucher	->/sales-masterdata/accounting-master-travel-voucher-accounting		-->	    
+ 
