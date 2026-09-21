@@ -13,10 +13,10 @@
             "state": {
               "type": "file-preview-dev",
               "state": {
-                "file": "Notas/Notas MDP.txt"
+                "file": "Reutilizables/M_DB2.txt"
               },
               "icon": "lucide-file",
-              "title": "Notas MDP"
+              "title": "M_DB2"
             }
           }
         ]
@@ -97,7 +97,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Notas/Notas MDP.txt",
+                "file": "Reutilizables/M_DB2.txt",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -116,7 +116,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Notas/Notas MDP.txt",
+                "file": "Reutilizables/M_DB2.txt",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
@@ -159,7 +159,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Notas/Notas MDP.txt",
+                "file": "Reutilizables/M_DB2.txt",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
@@ -195,14 +195,14 @@
   },
   "active": "c1e4d42ce7a30c19",
   "lastOpenFiles": [
-    "Notas/Credenciales.txt",
-    "Reutilizables/M_AS400.txt",
-    "Reutilizables/M_DB2.txt",
     "Reutilizables/M_DOCKER.txt",
     "Reutilizables/M_GIT-GITHUB.txt",
     "Reutilizables/M_MICROSERVICIOS.txt",
-    "Sin título.base",
     "Notas/Notas MDP.txt",
+    "Notas/Credenciales.txt",
+    "Reutilizables/M_AS400.txt",
+    "Reutilizables/M_DB2.txt",
+    "Sin título.base",
     "Notas/Web auditoria/AUDITORIA WEB.sql",
     "Notas/COMMAND.txt",
     "Notas/Motor taxes/atpco.txt",
