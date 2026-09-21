@@ -1,141 +1,141 @@
-
 ATPCO---------------------------------------------------------
 TTBS ---------------------------------- (TODO MAYUSCULA)  - año/mes
 TAX: XD
 COUNTRY: MX
 CARRIER: YY
 SALE DATE: HASTA MAYO 2025
-
-
-
-
-
-
+ 
+ 
+ 
+ 
+ 
+ 
 VIEW-------------------------------------------------------------
 TKT  : 139 3518398565
-
+ 
 2143572593
-
-
-
-
-
+ 
+ 
+ 
+ 
+ 
 2 ESPACIOS MAS Y X
-
+ 
 MX AR
 100; 99 -- SOLO 1 LINEA
-
+ 
 DESPEGLABLE 100; DIFERENTE DE 99 Y 300 HASTA ENCONTRAR OTRO 100
-
+ 
 LOS NO PASSED(COLOR ROJO)
-
-
-
+ 
+ 
+ 
 agrupar por 99 o 200 , por pased / not pased
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 --------------------------------------------------------------------
 HEADER
 000 TKT                       : TKT
 001 METHOD OF PAYMENT         : MONEDA
 002 POINT OF SALE             : PAIS; CIUDAD
 100 COUPON OF SALE            : ORI; CTRY ORI; DEST; CTRY DES
-
-
-
+ 
+ 
+ 
 000;1392143572593
 001;USD
 002;Ticket Point of Sale: EC
 101;01;UIO;MEX;FVLO;FBASIS
 201;Validated passengers
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 ---------------------------------------
-
+ 
 00 - CABECERA DATOS UNICOS DEL BOLETO
 000 - TKT
 001-  MONEDA DE PAGO / EQUIVALENTE
 002- PAIS Y CIUDAD DE VENTA
-
+ 
 100 - (99 (IMPUESTO A LA VENTA)
-
+ 
 300
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 003- Issue Date 
 004- Itineraty 
 005- Conection 
 006- Tipo de pasajero
-
-
-
-
+ 
+ 
+ 
+ 
 DEL ULTIMO AL INICIO 
 UNO ANTES (X) : EXCEPTUADOS - SI VIENE VACIO : NO EXCEPTUADO
 DOS ANTES :MONTO (F)  - PORCENTAJE(P): SE DIVIDE ENTRE 10000 
 TRES ANTES: TIPO DE MONTO
-
-
-
-
-
+ 
+ 
+ 
+ 
+ 
+ 

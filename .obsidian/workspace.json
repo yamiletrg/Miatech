@@ -13,10 +13,10 @@
             "state": {
               "type": "file-preview-dev",
               "state": {
-                "file": "db2/AM/Bkp/5015.sql"
+                "file": "Notas/Notas MDP.txt"
               },
               "icon": "lucide-file",
-              "title": "5015"
+              "title": "Notas MDP"
             }
           }
         ]
@@ -97,7 +97,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "db2/AM/Bkp/5015.sql",
+                "file": "Notas/Notas MDP.txt",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -116,7 +116,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "db2/AM/Bkp/5015.sql",
+                "file": "Notas/Notas MDP.txt",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
@@ -159,7 +159,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "db2/AM/Bkp/5015.sql",
+                "file": "Notas/Notas MDP.txt",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
@@ -195,9 +195,18 @@
   },
   "active": "c1e4d42ce7a30c19",
   "lastOpenFiles": [
+    "Notas/Credenciales.txt",
+    "Reutilizables/M_AS400.txt",
+    "Reutilizables/M_DB2.txt",
+    "Reutilizables/M_DOCKER.txt",
+    "Reutilizables/M_GIT-GITHUB.txt",
+    "Reutilizables/M_MICROSERVICIOS.txt",
     "Sin título.base",
+    "Notas/Notas MDP.txt",
+    "Notas/Web auditoria/AUDITORIA WEB.sql",
+    "Notas/COMMAND.txt",
+    "Notas/Motor taxes/atpco.txt",
     "Obsidian/AUDITORIA/WEB QUERYS.md",
-    "Scripts db2",
     "Obsidian/AUDITORIA/ATPCO.md",
     "Obsidian/ATPCO/stores.md",
     "Obsidian/ATPCO/Notas ATPCO.md",

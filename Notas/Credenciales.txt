@@ -15,13 +15,13 @@ AUDITORIA	JLEYVA      	SUR5NOR6
 JS-TEST       	SAJ54T      	6FAMILIA        10.0.0.47                       	SISSAP54 /SISSAP54_
 AM-PROD       	SAP03      	STNGRYAFC4      10.0.0.25  
 AM-PROD       	SAP19      	zaq1xsw2        10.0.0.25  
-
-
-
-
+ 
+ 
+ 
+ 
 --------------------------------------------------------------------------------------
 wsl: Miatech2026
-
+ 
 -------------- 
 --------------------------------------------------------------------------------------
 TOKEN WSL   
@@ -30,9 +30,9 @@ TOKEN WSL
 user : yadira
 contraseña: JABBEA
 url crear secret: http://10.0.0.111:8200/ui/vault/auth
-
-
-
+ 
+ 
+ 
  token clásico:
 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
 --------------------------------------------------------------------------------------
@@ -40,13 +40,14 @@ JENKINS
 http://10.210.0.5:8080/
 yadira
 yadira
-
+ 
 --------------------------------------------------------------------------------------
-
-
+ 
+ 
 TAX - https://faremanager.atpco.net/fmhome/login.jsp
 XAM2PIM // Pablito1
 XAM1ALV // cirio25a
-
-
+ 
+ 
 ------------------------------------------------------------------------------------------------------------------------------
+ 
